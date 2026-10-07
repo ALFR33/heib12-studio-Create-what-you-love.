@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="4qtykzOTuOP_khbTr3sipwjfU9ygGYgKquS8vuMJX3s" />
   <title>Salh Alheib Klel Studio - استوديو الإنتاج الموسيقي</title>
+  
+  <!-- مكتبة Google الرسمية لـ OAuth2 -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   
   <!-- Tailwind CSS CDN للتصميم -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -43,6 +47,25 @@
           </div>
         </div>
 
+        <!-- زر دخول Google الرسمي المدمج مع المعرّف الخاص بك -->
+        <div class="p-3 border-b border-[#1a1d28] flex flex-col items-center justify-center">
+          <div id="g_id_onload"
+               data-client_id="360411448313-770sdpuiela9gnd4i9698lbs9nc8gu9q.apps.googleusercontent.com"
+               data-context="signin"
+               data-ux_mode="popup"
+               data-callback="handleGoogleLogin"
+               data-auto_prompt="false">
+          </div>
+          <div class="g_id_signin" 
+               data-type="standard"
+               data-shape="pill"
+               data-theme="filled_blue"
+               data-text="signin_with"
+               data-size="medium"
+               data-logo_alignment="left">
+          </div>
+        </div>
+
         <!-- التبويبات -->
         <nav class="p-3 space-y-1">
           <button onclick="switchTab('create')" id="tabBtnCreate" class="w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all bg-gradient-to-r from-indigo-600/30 to-purple-600/20 text-white border border-indigo-500/40">
@@ -76,7 +99,7 @@
       <div class="p-3 border-t border-[#1a1d28] bg-[#090b10] space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5 min-w-0">
-            <div id="userAvatar" class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+            <div id="userAvatar" class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden border border-cyan-500/40">
               SK
             </div>
             <div class="leading-tight min-w-0">
@@ -89,11 +112,11 @@
               </span>
             </div>
           </div>
-          <button onclick="openNewUserModal()" class="text-[10px] px-2 py-1 rounded bg-[#171c2b] hover:bg-indigo-600/30 text-indigo-300 border border-slate-700">
+          <button onclick="openNewUserModal()" class="text-[10px] px-2 py-1 rounded bg-[#171c2b] hover:bg-indigo-600/30 text-indigo-300 border border-slate-700 cursor-pointer">
             تبديل +
           </button>
         </div>
-        <button onclick="logoutUser()" class="w-full py-1 text-[11px] rounded-lg bg-red-950/40 hover:bg-red-950 text-red-300 border border-red-500/20 text-center">
+        <button onclick="logoutUser()" class="w-full py-1 text-[11px] rounded-lg bg-red-950/40 hover:bg-red-950 text-red-300 border border-red-500/20 text-center cursor-pointer">
           تسجيل الخروج من الجلسة
         </button>
       </div>
@@ -123,7 +146,7 @@
                 <i data-lucide="radio" class="w-3.5 h-3.5 text-pink-400"></i>
                 <span>الكلمات (Lyrics)</span>
               </label>
-              <button onclick="generateLyricsMock()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/30">
+              <button onclick="generateLyricsMock()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/30 cursor-pointer">
                 <i data-lucide="sparkles" class="w-3 h-3"></i>
                 <span>تأليف كلمات ذكية</span>
               </button>
@@ -141,9 +164,9 @@
 
             <!-- وسوم سريعة -->
             <div class="flex flex-wrap gap-1.5 pt-1">
-              <button onclick="setPromptTag('طرب شرقي مع إيقاع حديث')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">طرب شرقي</button>
-              <button onclick="setPromptTag('موسيقى عود ولو-فاي ريلاكس')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">عود لو-فاي</button>
-              <button onclick="setPromptTag('تراب حماسي وسينث ويف 128 bpm')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">تراب حماسي</button>
+              <button onclick="setPromptTag('طرب شرقي مع إيقاع حديث')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300 cursor-pointer">طرب شرقي</button>
+              <button onclick="setPromptTag('موسيقى عود ولو-فاي ريلاكس')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300 cursor-pointer">عود لو-فاي</button>
+              <button onclick="setPromptTag('تراب حماسي وسينث ويف 128 bpm')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300 cursor-pointer">تراب حماسي</button>
             </div>
           </div>
 
@@ -185,7 +208,7 @@
       <!-- شاشة العرض (المكتبة، مكسر المسارات، وغرفة المؤسس) -->
       <section class="flex-1 p-5 overflow-y-auto space-y-4">
         
-        <!-- قسم الـ iframe المطلوب بالضبط -->
+        <!-- قسم الـ iframe للموقع المدمج بالشروط الكاملة -->
         <div class="w-full bg-slate-900 border border-cyan-500/30 rounded-2xl overflow-hidden shadow-2xl mb-4">
           <iframe 
             src="https://flowmusic.app" 
@@ -226,22 +249,22 @@
             <div class="p-4 bg-[#121624] border border-pink-500/30 rounded-xl space-y-3">
               <span class="text-xs font-bold text-pink-400 block">🎤 صوت الغناء (Vocals)</span>
               <p class="text-[11px] text-slate-400">المسار البشري النقي بدون موسيقى</p>
-              <button onclick="downloadStem('Vocals')" class="w-full py-1.5 bg-[#1c2235] hover:bg-pink-600 text-xs rounded-lg transition-colors">تحميل الغناء</button>
+              <button onclick="downloadStem('Vocals')" class="w-full py-1.5 bg-[#1c2235] hover:bg-pink-600 text-xs rounded-lg transition-colors cursor-pointer">تحميل الغناء</button>
             </div>
             <div class="p-4 bg-[#121624] border border-amber-500/30 rounded-xl space-y-3">
               <span class="text-xs font-bold text-amber-400 block">🥁 الإيقاع (Drums)</span>
               <p class="text-[11px] text-slate-400">الدرامز والضربات الإيقاعية نقية</p>
-              <button onclick="downloadStem('Drums')" class="w-full py-1.5 bg-[#1c2235] hover:bg-amber-600 text-xs rounded-lg transition-colors">تحميل الإيقاع</button>
+              <button onclick="downloadStem('Drums')" class="w-full py-1.5 bg-[#1c2235] hover:bg-amber-600 text-xs rounded-lg transition-colors cursor-pointer">تحميل الإيقاع</button>
             </div>
             <div class="p-4 bg-[#121624] border border-cyan-500/30 rounded-xl space-y-3">
               <span class="text-xs font-bold text-cyan-400 block">🎸 البيس (Bass 808)</span>
               <p class="text-[11px] text-slate-400">ترددات البيس العميقة المنفصلة</p>
-              <button onclick="downloadStem('Bass')" class="w-full py-1.5 bg-[#1c2235] hover:bg-cyan-600 text-xs rounded-lg transition-colors">تحميل البيس</button>
+              <button onclick="downloadStem('Bass')" class="w-full py-1.5 bg-[#1c2235] hover:bg-cyan-600 text-xs rounded-lg transition-colors cursor-pointer">تحميل البيس</button>
             </div>
             <div class="p-4 bg-[#121624] border border-indigo-500/30 rounded-xl space-y-3">
               <span class="text-xs font-bold text-indigo-400 block">🎹 الآلات (Other Instruments)</span>
               <p class="text-[11px] text-slate-400">العود، البيانو والوتريات معزولة</p>
-              <button onclick="downloadStem('Instruments')" class="w-full py-1.5 bg-[#1c2235] hover:bg-indigo-600 text-xs rounded-lg transition-colors">تحميل الآلات</button>
+              <button onclick="downloadStem('Instruments')" class="w-full py-1.5 bg-[#1c2235] hover:bg-indigo-600 text-xs rounded-lg transition-colors cursor-pointer">تحميل الآلات</button>
             </div>
           </div>
         </div>
@@ -257,7 +280,7 @@
             <p class="text-xs text-slate-400">مخصصة لمؤسس الاستوديو Salh Alheib Klel. أدخل رمز الأمان:</p>
             <div class="flex gap-2">
               <input id="pinInput" type="password" placeholder="الرمز: 8686" class="flex-1 bg-[#090b10] border border-slate-700 rounded-xl px-3 py-2 text-center text-sm font-mono text-amber-300" />
-              <button onclick="unlockFounder()" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">دخول 🔓</button>
+              <button onclick="unlockFounder()" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs cursor-pointer">دخول 🔓</button>
             </div>
             <p id="pinError" class="text-xs text-red-400 hidden font-bold">الرمز غير صحيح! الرمز الافتراضي: 8686</p>
           </div>
@@ -269,7 +292,7 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 تم توثيق المؤسس Salh Alheib Klel - مركز المراقبة السيبراني نشط
               </span>
-              <button onclick="lockFounder()" class="px-3 py-1 bg-red-950 text-red-300 text-xs rounded-lg border border-red-500/30">قفل 🔒</button>
+              <button onclick="lockFounder()" class="px-3 py-1 bg-red-950 text-red-300 text-xs rounded-lg border border-red-500/30 cursor-pointer">قفل 🔒</button>
             </div>
 
             <!-- إحصائيات الجدار الناري -->
@@ -309,7 +332,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-800/60 font-mono text-[11px]">
                   <tr><td class="py-2 text-white">iPhone 15 Pro / Safari</td><td>السعودية 🇸🇦</td><td class="text-emerald-400">نشط الآن</td><td>آمن ✓</td></tr>
-                  <tr><td class="py-2 text-white">MacBook M3 / Chrome</td><td>الإارات 🇦🇪</td><td class="text-cyan-300">يؤلف تراك</td><td>آمن ✓</td></tr>
+                  <tr><td class="py-2 text-white">MacBook M3 / Chrome</td><td>الإمارات 🇦🇪</td><td class="text-cyan-300">يؤلف تراك</td><td>آمن ✓</td></tr>
                   <tr><td class="py-2 text-white">Windows 11 / Edge</td><td>مصر 🇪🇬</td><td class="text-slate-300">يستمع للمكتبة</td><td>آمن ✓</td></tr>
                 </tbody>
               </table>
@@ -352,8 +375,30 @@
     </div>
   </footer>
 
-  <!-- جافاسكريبت للتشغيل والتفاعل الكامل -->
+  <!-- جافاسكريبت للتشغيل والتفاعل الكامل ودخول Google -->
   <script>
+    // الدالة التي تستقبل بيانات المستخدم بعد تسجيل الدخول عبر Google بنجاح
+    function handleGoogleLogin(response) {
+      try {
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        const data = JSON.parse(jsonPayload);
+
+        alert("أهلاً بك يا " + data.name);
+
+        // تحديث اسم المستخدم والصورة بالاستوديو
+        document.getElementById("userName").innerText = data.name;
+        document.getElementById("userRole").innerText = "حساب Google متصل";
+
+        if (data.picture) {
+          document.getElementById("userAvatar").innerHTML = `<img src="${data.picture}" class="w-full h-full object-cover rounded-full" />`;
+        }
+      } catch (e) {
+        console.error("خطأ في معالجة دخول Google:", e);
+      }
+    }
+
     // مكتبة التراكات
     let tracks = [
       {
@@ -387,15 +432,15 @@
         div.className = "p-3 bg-[#0e111a] border border-[#1d2232] rounded-xl flex items-center justify-between gap-3";
         div.innerHTML = `
           <div class="flex items-center gap-3">
-            <button onclick="playTrack('${track.id}')" class="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">▶</button>
+            <button onclick="playTrack('${track.id}')" class="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold cursor-pointer">▶</button>
             <div>
               <h4 class="text-xs font-bold text-white">${track.title}</h4>
               <p class="text-[10px] text-slate-400">${track.desc}</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="switchTab('stems')" class="px-2.5 py-1 bg-[#171c2b] text-indigo-300 text-xs rounded-lg border border-indigo-500/30">فصل المسارات</button>
-            <button onclick="alert('جاري تحميل التراك MP3...')" class="p-1.5 bg-[#171c2b] text-slate-300 text-xs rounded-lg">تحميل</button>
+            <button onclick="switchTab('stems')" class="px-2.5 py-1 bg-[#171c2b] text-indigo-300 text-xs rounded-lg border border-indigo-500/30 cursor-pointer">فصل المسارات</button>
+            <button onclick="alert('جاري تحميل التراك MP3...')" class="p-1.5 bg-[#171c2b] text-slate-300 text-xs rounded-lg cursor-pointer">تحميل</button>
           </div>
         `;
         container.appendChild(div);
