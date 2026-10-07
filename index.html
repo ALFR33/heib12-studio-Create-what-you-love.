@@ -5,175 +5,211 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>heib12 - AI Music Studio</title>
   
-  <!-- مكتبة Google الرسمية لـ OAuth2 -->
+  <!-- مكتبة Google الرسمية لتسجيل الدخول الحقيقي -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   
-  <!-- Tailwind CSS والتنسيقات -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 font-sans">
 
-  <div class="w-full max-w-4xl bg-slate-900 border border-cyan-500/30 rounded-2xl p-6 shadow-2xl">
+  <div class="w-full max-w-5xl bg-slate-900 border border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col min-h-[640px]">
     
-    <!-- شريط الرأس -->
-    <header class="flex flex-wrap items-center justify-between pb-6 border-b border-slate-800 gap-4">
+    <!-- Header -->
+    <header class="px-6 py-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-white">
-          <i class="fa-solid fa-compact-disc text-xl"></i>
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-compact-disc text-white text-lg"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">heib12</h1>
-          <p class="text-xs text-slate-400">استوديو الموسيقى الذكي</p>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">heib12</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 font-mono">Studio</span>
+          </div>
+          <p class="text-xs text-slate-400">توليد وتنزيل الموسيقى بالذكاء الاصطناعي</p>
         </div>
       </div>
 
-      <!-- قسم تسجيل دخول Google الفعلي -->
-      <div>
-        <!-- زر Google الحقيقي الرسمي المربوط بمفتاحك -->
-        <div id="g_id_onload"
-             data-client_id="360411448313-770sdpuiela9gnd4i9698lbs9nc8gu9q.apps.googleusercontent.com"
-             data-context="signin"
-             data-ux_mode="popup"
-             data-callback="handleGoogleResponse"
-             data-auto_prompt="false">
-        </div>
+      <!-- تسجيل دخول Google الحقيقي -->
+      <div class="flex items-center gap-3">
+        <!-- زر Google الرسمي -->
+        <div id="google-signin-btn"></div>
 
-        <div class="g_id_signin"
-             data-type="standard"
-             data-shape="pill"
-             data-theme="filled_blue"
-             data-text="signin_with"
-             data-size="medium"
-             data-logo_alignment="left">
-        </div>
-
-        <!-- يظهر فقط بعد تسجيل دخولك الفعلي بحسابك -->
-        <div id="user-box" class="hidden flex items-center gap-3 bg-slate-950 border border-slate-800 px-3.5 py-2 rounded-xl">
-          <img id="user-img" src="" class="w-8 h-8 rounded-full border border-cyan-400 object-cover" />
-          <div class="text-right">
-            <p id="user-name" class="text-xs font-bold text-slate-200"></p>
-            <p id="user-email" class="text-[10px] text-slate-400"></p>
-          </div>
-          <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-xs mr-2" title="تسجيل الخروج">
+        <!-- الملف الشخصي بعد تسجيل الدخول -->
+        <div id="user-profile" class="hidden flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5">
+          <img id="user-avatar" src="" class="w-6 h-6 rounded-full border border-cyan-500" />
+          <span id="user-name" class="text-xs text-slate-200 font-medium"></span>
+          <button onclick="signOutGoogle()" class="text-slate-400 hover:text-rose-400 text-xs ml-1" title="تسجيل الخروج">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- مساحة العمل والإنتاج -->
-    <main class="mt-6 space-y-4">
-      <div id="login-warning" class="p-3 bg-cyan-950/70 border border-cyan-500/50 rounded-xl text-cyan-200 text-xs">
-        👋 مرحباً بك! قم بالضغط على زر <b>Sign in with Google</b> أعلاه لتسجيل الدخول الفعلي وتفعيل التوليد والتنزيل.
-      </div>
+    <!-- Main Workspace -->
+    <main class="flex-1 p-6">
+      <div id="alert-box" class="hidden mb-4 p-3 rounded-xl text-xs flex items-center justify-between"></div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">اسم المقطوعة</label>
-        <input id="track-name" type="text" value="نغم الصحراء" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:border-cyan-400 outline-none text-slate-100" />
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان الأغنية</label>
+            <input id="track-title" type="text" value="نغم الصحراء" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:border-cyan-400 outline-none text-slate-100">
+          </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">الوصف الموسيقي (Sound Prompt)</label>
-        <textarea id="track-desc" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:border-cyan-400 outline-none text-slate-100">Modern oriental oud fusion, atmospheric ambient, deep warm sub bass, 110 bpm</textarea>
-      </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">وصف الموسيقى والآلات (Sound Prompt)</label>
+            <textarea id="track-prompt" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-cyan-400 outline-none text-slate-100">Modern oriental oud fusion, atmospheric ambient, deep warm sub bass, 110 bpm</textarea>
+          </div>
 
-      <button id="gen-btn" onclick="startGeneration()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:opacity-95 font-bold rounded-xl text-white shadow-lg flex items-center justify-center gap-2 transition-all">
-        <i class="fa-solid fa-bolt"></i> توليد المقطوعة الموسيقية
-      </button>
+          <button id="generate-btn" onclick="generateTrack()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:opacity-95 transition-all">
+            <i class="fa-solid fa-bolt"></i>
+            <span>توليد وتأليف المقطوعة</span>
+          </button>
+        </div>
 
-      <!-- قائمة الملفات الصوتية والتنزيل المباشر -->
-      <div class="mt-6 border-t border-slate-800 pt-4">
-        <h3 class="text-xs font-bold text-slate-300 mb-3 flex items-center gap-2">
-          <i class="fa-solid fa-download text-cyan-400"></i> الملفات الجاهزة للتنزيل المباشر:
-        </h3>
-        <div id="tracks-container" class="space-y-2">
-          <!-- ستضاف المقاطع هنا عند التوليد -->
+        <!-- قسم التنزيل -->
+        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-4">
+          <h3 class="text-sm font-semibold text-cyan-300 flex items-center gap-2">
+            <i class="fa-solid fa-download"></i> قائمة التنزيل المباشر
+          </h3>
+          <div id="tracks-list" class="space-y-2">
+            <!-- تظهر الأغاني هنا للتحميل المباشر -->
+          </div>
         </div>
       </div>
     </main>
   </div>
 
   <script>
-    let activeUser = null;
+    // معرف Google OAuth المخصص لموقعك
+    const GOOGLE_CLIENT_ID = "360411448313.apps.googleusercontent.com";
 
-    // استلام بيانات الدخول الحقيقية من خوادم Google
-    function handleGoogleResponse(response) {
-      const base64Url = response.credential.split('.')[1];
+    let currentUser = null;
+    let tracks = [
+      {
+        id: "1",
+        title: "نغم الصحراء",
+        url: "https://storage.googleapis.com/producer-app-public/clips/demo_track.mp3"
+      }
+    ];
+
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-      const profile = JSON.parse(jsonPayload);
-
-      activeUser = profile;
-
-      // إخفاء زر Google وإظهار حسابك
-      document.querySelector(".g_id_signin").style.display = "none";
-      document.getElementById("user-box").classList.remove("hidden");
-      document.getElementById("login-warning").innerHTML = `✅ مرحباً بك يا <b>${profile.name}</b>! الحساب متصل وجاهز للإنتاج والتنزيل.`;
-      document.getElementById("login-warning").className = "p-3 bg-emerald-950/70 border border-emerald-500/50 rounded-xl text-emerald-200 text-xs";
-
-      document.getElementById("user-name").innerText = profile.name;
-      document.getElementById("user-email").innerText = profile.email;
-      document.getElementById("user-img").src = profile.picture;
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
     }
 
-    function logout() {
-      activeUser = null;
-      document.getElementById("user-box").classList.add("hidden");
-      document.querySelector(".g_id_signin").style.display = "block";
-      document.getElementById("login-warning").innerHTML = "👋 يرجى تسجيل الدخول بحساب Google للبدء.";
-      document.getElementById("login-warning").className = "p-3 bg-cyan-950/70 border border-cyan-500/50 rounded-xl text-cyan-200 text-xs";
+    function handleCredentialResponse(response) {
+      const data = parseJwt(response.credential);
+      currentUser = {
+        name: data.name,
+        email: data.email,
+        picture: data.picture,
+        sub: data.sub
+      };
+
+      document.getElementById("google-signin-btn").classList.add("hidden");
+      const userProfile = document.getElementById("user-profile");
+      userProfile.classList.remove("hidden");
+      document.getElementById("user-name").innerText = currentUser.name;
+      document.getElementById("user-avatar").src = currentUser.picture;
+
+      showAlert(`مرحباً ${currentUser.name}! تم تسجيل الدخول بنجاح.`, "success");
     }
 
-    // تنزيل ملف الـ MP3 مباشرة إلى جهازك
-    function downloadAudio(url, filename) {
+    function signOutGoogle() {
+      currentUser = null;
+      document.getElementById("user-profile").classList.add("hidden");
+      document.getElementById("google-signin-btn").classList.remove("hidden");
+      showAlert("تم تسجيل الخروج.", "info");
+    }
+
+    window.onload = function () {
+      if (window.google) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("google-signin-btn"),
+          { theme: "filled_blue", size: "medium", shape: "pill", text: "signin_with" }
+        );
+      }
+      renderTracks();
+    };
+
+    function downloadAudio(url, title) {
       fetch(url)
         .then(res => res.blob())
         .then(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = blobUrl;
-          link.download = `${filename || "heib12-track"}.mp3`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(blobUrl);
+          const a = document.createElement("a");
+          const objectUrl = URL.createObjectURL(blob);
+          a.href = objectUrl;
+          a.download = `${title || 'heib12-track'}.mp3`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(objectUrl);
         })
         .catch(() => {
-          window.open(url, '_blank');
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${title}.mp3`;
+          a.target = "_blank";
+          a.click();
         });
     }
 
-    function startGeneration() {
-      if (!activeUser) {
-        alert("يرجى تسجيل الدخول بحساب Google أولاً!");
+    function generateTrack() {
+      if (!currentUser) {
+        showAlert("يرجى تسجيل الدخول بحساب Google أولاً للتوليد والتنزيل!", "error");
         return;
       }
 
-      const btn = document.getElementById("gen-btn");
-      const title = document.getElementById("track-name").value || "مقطوعة heib12";
+      const btn = document.getElementById("generate-btn");
+      const title = document.getElementById("track-title").value || "تراك جديد";
 
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الإنتاج والتوزيع الموسيقي...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الإنتاج والتوزيع...`;
 
       setTimeout(() => {
+        tracks.unshift({
+          id: Date.now().toString(),
+          title: title,
+          url: "https://storage.googleapis.com/producer-app-public/clips/demo_track.mp3"
+        });
+        renderTracks();
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> توليد المقطوعة الموسيقية`;
-        
-        const container = document.getElementById("tracks-container");
-        const trackHtml = `
-          <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
-            <div>
-              <p class="text-xs font-bold text-slate-100">${title}</p>
-              <p class="text-[10px] text-slate-400">المالك: ${activeUser.name}</p>
-            </div>
-            <button onclick="downloadAudio('https://storage.googleapis.com/producer-app-public/clips/demo_track.mp3', '${title}')" class="px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1.5 transition-all">
-              <i class="fa-solid fa-download"></i> تنزيل MP3
-            </button>
-          </div>
-        `;
-        container.insertAdjacentHTML("afterbegin", trackHtml);
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> توليد وتأليف المقطوعة`;
+        showAlert("تم إنشاء التراك بنجاح! يمكنك تنزيله الآن.", "success");
       }, 2000);
+    }
+
+    function renderTracks() {
+      const container = document.getElementById("tracks-list");
+      container.innerHTML = tracks.map(t => `
+        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-200 truncate">${t.title}</span>
+          <button onclick="downloadAudio('${t.url}', '${t.title}')" class="px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-md text-xs flex items-center gap-1">
+            <i class="fa-solid fa-download"></i> تنزيل MP3
+          </button>
+        </div>
+      `).join("");
+    }
+
+    function showAlert(msg, type) {
+      const box = document.getElementById("alert-box");
+      box.className = `mb-4 p-3 rounded-xl text-xs flex items-center justify-between ${
+        type === 'success' ? 'bg-cyan-950 border border-cyan-500 text-cyan-200' : 'bg-rose-950 border border-rose-500 text-rose-200'
+      }`;
+      box.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.classList.add('hidden')">✕</button>`;
+      box.classList.remove("hidden");
     }
   </script>
 </body>
