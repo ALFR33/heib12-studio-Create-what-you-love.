@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salh Alheib Klel Studio - استوديو الإنتاج الموسيقي</title>
+  
+  <!-- Tailwind CSS CDN للتصميم -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons للأيقونات -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* تخصيص شريط التمرير */
+    ::-webkit-scrollbar {height: 6px; }090d; }
+    ::-webkit-scrollbar-thumb { background: #1f2538; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+  </style>
+</head>
+<body class="bg-[#08090d] text-slate-100 font-sans h-screen flex flex-col overflow-hidden selection:bg-purple-500/30">
+
+  <!-- مشغل الصوت الخفي -->
+  <audio id="audioPlayer"></audio>
+
+  <!-- الحاوية الرئيسية للاستوديو -->
+  <div class="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
+    
+    <!-- القائمة الجانبية (Sidebar) -->
+    <aside class="w-full lg:w-64 bg-[#0d0f15] border-b lg:border-b-0 lg:border-l border-[#1a1d28] flex flex-col justify-between shrink-0 z-20">
+      <div>
+        <!-- الشعار -->
+        <div class="p-4 flex items-center gap-2.5 border-b border-[#1a1d28]">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-400 via-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white">
+            <i data-lucide="waves" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-sm sm:text-base font-black tracking-tight bg-gradient-to-r from-cyan-300 via-indigo-200 to-pink-300 bg-clip-text text-transparent">
+              Salh Alheib Klel
+            </span>
+            <span class="text-[9px] mr-1.5 px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono font-bold">
+              STUDIO
+            </span>
+          </div>
+        </div>
+
+        <!-- التبويبات -->
+        <nav class="p-3 space-y-1">
+          <button onclick="switchTab('create')" id="tabBtnCreate" class="w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all bg-gradient-to-r from-indigo-600/30 to-purple-600/20 text-white border border-indigo-500/40">
+            <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+            <span>إنشاء وتأليف (Create)</span>
+          </button>
+
+          <button onclick="switchTab('library')" id="tabBtnLibrary" class="w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all text-slate-400 hover:text-slate-200<i data-lucide="list-music" class="w-4 h-4 text-cyan-400"></i>
+            <span>المكتبة الصوتية</span>
+          </button>
+
+          <button onclick="switchTab('stems')" id="tabBtnStems" class="w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all text-slate-400 hover:text-slate-200 hover:bg-[#141822]">
+            <i data-lucide="sliders" class="w-4 h-4 text-pink-400"></i>
+            <span>مكسر المسارات (Stems)</span>
+          </button>
+
+          <button onclick="switchTab('founder')" id="tabBtnFounder" class="w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all text-slate-400 hover:text-slate-200 hover:bg-[#141822]">
+            <div class="flex items-center gap-3">
+              <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+              <span>غرفة المؤسس ✦</span>
+            </div>
+            <span id="founderBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+              مقفلة 🔒
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- الملف الشخصي وتسجيل الخروج -->
+      <div class="p-3 border-t border-[#1a1d28] bg-[#090b10] space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="userAvatar" class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+              SK
+            </div>
+            <div class="leading-tight min-w-0">
+              <span id="userName" class="text-xs font-bold text-slate-200 block truncate max-w-[120px]">
+                Salh Alheib Klel (المؤسس)
+              </span>
+              <span id="userRole" class="text-[10px] text-emerald-400 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Founder
+              </span>
+            </div>
+          </div>
+          <button onclick="openNewUserModal()" class="text-[10px] px-2 py-1 rounded bg-[#171c2b] hover:bg-indigo-600/30 text-indigo-300 border border-slate-700">
+            تبديل +
+          </button>
+        </div>
+        <button onclick="logoutUser()" class="w-full py-1 text-[11px] rounded-lg bg-red-950/40 hover:bg-red-950 text-red-300 border border-red-500/20 text-center">
+          تسجيل الخروج من الجلسة
+        </button>
+      </div>
+    </aside>
+
+    <!-- منطقة العمل والإنتاج -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#0a0c12]">
+      
+      <!-- لوحة التأليف والمولد الذكي (Create Panel) -->
+      <section class="w-full md:w-[420px] lg:w-[460px] border-b md:border-b-0 md:border-l border-[#1a1d28] bg-[#0c0e16] p-4 sm:p-5 flex flex-col justify-between overflow-y-auto shrink-0 space-y-4">
+        <div class="space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-sm font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="disc" class="w-4 h-4 text-cyan-400 animate-spin"></i>
+                <span>استوديو Salh Alheib Klel</span>
+              </h1>
+              <p class="text-[11px] text-slate-400">تأليف وهندسة موسيقية احترافية بالذكاء الاصطناعي</p>
+            </div>
+          </div>
+
+          <!-- الكلمات (Lyrics) -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i data-lucide="radio" class="w-3.5 h-3.5 text-pink-400"></i>
+                <span>الكلمات (Lyrics)</span>
+              </label>
+              <button onclick="generateLyricsMock()" class="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/30">
+                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                <span>تأليف كلمات ذكية</span>
+              </button>
+            </div>
+            <textarea id="lyricsInput" rows="2" placeholder="اكتب كلمات الأغنية هنا أو اضغط 'تأليف كلمات ذكية'..." class="w-full bg-[#121520] border border-[#212638] rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500 text-slate-100 placeholder:text-slate-500"></textarea>
+          </div>
+
+          <!-- ستايل الموسيقى -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+              <i data-lucide="music" class="w-3.5 h-3.5 text-indigo-400"></i>
+              <span>النمط والإيقاع (Style & Prompt)</span>
+            </label>
+            <textarea id="promptInput" rows="2" placeholder="اوصف الموسيقى والآلات المطلوبة..." class="w-full bg-[#121520] border border-[#212638] rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500 text-slate-100 placeholder:text-slate-500">لحن عود أصيل مدمج مع بيس تراب 808 وتريات سينمائية</textarea>
+
+            <!-- وسوم سريعة -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <button onclick="setPromptTag('طرب شرقي مع إيقاع حديث')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">طرب شرقي</button>
+              <button onclick="setPromptTag('موسيقى عود ولو-فاي ريلاكس')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">عود لو-فاي</button>
+              <button onclick="setPromptTag('تراب حماسي وسينث ويف 128 bpm')" class="text-[11px] px-2 py-0.5 bg-[#151926] hover:bg-indigo-950/60 border border-[#23293d] rounded-lg text-slate-300">تراب حماسي</button>
+            </div>
+          </div>
+
+          <!-- المولد الذكي (Producer AI) -->
+          <div class="p-3.5 bg-gradient-to-b from-[#101422] to-[#0c0e18] border border-cyan-500/40 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="waves" class="w-4 h-4 text-cyan-400 animate-pulse"></i>
+                <h3 class="text-xs font-bold text-white">المولد الذكي: Producer AI</h3>
+              </div>
+              <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40">متصل الآن</span>
+            </div>
+
+            <!-- سجل الشات السريع -->
+            <div id="producerChat" class="p-2.5 bg-[#080a10] border border-slate-800 rounded-xl max-h-36 overflow-y-auto space-y-2 text-xs">
+              <div class="p-2 rounded-lg bg-[#141824] text-slate-200 border border-slate-800 text-[11px]">
+                أهلاً بك يا فنان! أنا Producer. اكتب فكرتك الموسيقية وسأقوم بهندستها وتوليدها فوراً.
+              </div>
+            </div>
+
+            <div class="flex gap-1.5">
+              <input id="producerChatInput" type="text" placeholder="اكتب طلبك الموسيقي لـ Producer..." class="flex-1 bg-[#090b10] border border-[#212638] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
+              <button onclick="sendProducerChat()" class="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs rounded-xl shadow cursor-pointer">
+                تأليف
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- زر التوليد الكبير -->
+        <div class="pt-2">
+          <button onclick="createTrack()" id="btnCreateTrack" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span id="btnCreateText">إنشاء التراك الموسيقي (Create Track)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- شاشة العرض (المكتبة، مكسر المسارات، وغرفة المؤسس) -->
+      <section class="flex-1 p-5 overflow-y-auto space-y-4">
+        
+        <!-- قسم المكتبة -->
+        <div id="viewLibrary" class="space-y-3">
+          <div class="border-b border-[#1a1d28] pb-3">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="list-music" class="w-4 h-4 text-cyan-400"></i>
+              <span>المكتبة والتراكات المنتجة</span>
+            </h2>
+            <p class="text-xs text-slate-400">استمع للتراكات، حمّلها، أو افصل مساراتها الصوتية</p>
+          </div>
+
+          <div id="tracksList" class="space-y-3">
+            <!-- كروت التراكات تظهر هنا ديناميكياً -->
+          </div>
+        </div>
+
+        <!-- قسم مكسر المسارات (Stems) -->
+        <div id="viewStems" class="hidden space-y-4">
+          <div class="border-b border-[#1a1d28] pb-3">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-pink-400"></i>
+              <span>مكسر المسارات الأربعة (Stems Mixer)</span>
+            </h2>
+            <p class="text-xs text-slate-400">عزل وتحميل كل مسار صوتي بشكل مستقل</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="p-4 bg-[#121624] border border-pink-500/30 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-pink-400 block">🎤 صوت الغناء (Vocals)</span>
+              <p class="text-[11px] text-slate-400">المسار البشري النقي بدون موسيقى</p>
+              <button onclick="downloadStem('Vocals')" class="w-full py-1.5 bg-[#1c2235] hover:bg-pink-600 text-xs rounded-lg transition-colors">تحميل الغناء</button>
+            </div>
+            <div class="p-4 bg-[#121624] border border-amber-500/30 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-amber-400 block">🥁 الإيقاع (Drums)</span>
+              <p class="text-[11px] text-slate-400">الدرامز والضربات الإيقاعية نقية</p>
+              <button onclick="downloadStem('Drums')" class="w-full py-1.5 bg-[#1c2235] hover:bg-amber-600 text-xs rounded-lg transition-colors">تحميل الإيقاع</button>
+            </div>
+            <div class="p-4 bg-[#121624] border border-cyan-500/30 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-cyan-400 block">🎸 البيس (Bass 808)</span>
+              <p class="text-[11px] text-slate-400">ترددات البيس العميقة المنفصلة</p>
+              <button onclick="downloadStem('Bass')" class="w-full py-1.5 bg-[#1c2235] hover:bg-cyan-600 text-xs rounded-lg transition-colors">تحميل البيس</button>
+            </div>
+            <div class="p-4 bg-[#121624] border border-indigo-500/30 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-indigo-400 block">🎹 الآلات (Other Instruments)</span>
+              <p class="text-[11px] text-slate-400">العود، البيانو والوتريات معزولة</p>
+              <button onclick="downloadStem('Instruments')" class="w-full py-1.5 bg-[#1c2235] hover:bg-indigo-600 text-xs rounded-lg transition-colors">تحميل الآلات</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم غرفة المؤسس والمراقبة والأمان -->
+        <div id="viewFounder" class="hidden space-y-5">
+          <!-- شاشة القفل -->
+          <div id="founderLockScreen" class="p-8 bg-[#10121c] border border-amber-500/40 rounded-3xl text-center max-w-md mx-auto space-y-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-bold text-white">غرفة تحكم المؤسس المشفرة</h3>
+            <p class="text-xs text-slate-400">مخصصة لمؤسس الاستوديو Salh Alheib Klel. أدخل رمز الأمان:</p>
+            <div class="flex gap-2">
+              <input id="pinInput" type="password" placeholder="الرمز: 8686" class="flex-1 bg-[#090b10] border border-slate-700 rounded-xl px-3 py-2 text-center text-sm font-mono text-amber-300" />
+              <button onclick="unlockFounder()" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">دخول 🔓</button>
+            </div>
+            <p id="pinError" class="text-xs text-red-400 hidden font-bold">الرمز غير صحيح! الرمز الافتراضي: 8686</p>
+          </div>
+
+          <!-- شاشة المراقبة عند فتح الغرفة -->
+          <div id="founderDashboard" class="hidden space-y-4">
+            <div class="flex items-center justify-between p-4 bg-[#111625] border border-amber-500/40 rounded-2xl">
+              <span class="text-xs font-bold text-amber-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                تم توثيق المؤسس Salh Alheib Klel - مركز المراقبة السيبراني نشط
+              </span>
+              <button onclick="lockFounder()" class="px-3 py-1 bg-red-950 text-red-300 text-xs rounded-lg border border-red-500/30">قفل 🔒</button>
+            </div>
+
+            <!-- إحصائيات الجدار الناري -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 bg-[#0d101a] border border-emerald-500/30 rounded-xl">
+                <span class="text-slate-400 block text-[10px]">الجدار الناري:</span>
+                <span class="text-emerald-400 font-bold font-mono">حماية DDoS 100%</span>
+              </div>
+              <div class="p-3 bg-[#0d101a] border border-cyan-500/30 rounded-xl">
+                <span class="text-slate-400 block text-[10px]">التشفير:</span>
+                <span class="text-cyan-300 font-bold font-mono">AES-256 GCM</span>
+              </div>
+              <div class="p-3 bg-[#0d101a] border border-amber-500/30 rounded-xl">
+                <span class="text-slate-400 block text-[10px]">هجمات محظورة:</span>
+                <span class="text-amber-400 font-bold font-mono">142 محاولة</span>
+              </div>
+              <div class="p-3 bg-[#0d101a] border border-purple-500/30 rounded-xl">
+                <span class="text-slate-400 block text-[10px]">ترخيص الاستوديو:</span>
+                <span class="text-purple-300 font-bold font-mono">SAK-2026-X99</span>
+              </div>
+            </div>
+
+            <!-- جدول الأجهزة المتصلة -->
+            <div class="p-4 bg-[#0c0f18] border border-slate-800 rounded-2xl space-y-3">
+              <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>الأجهزة المتصلة الحية والبلدان (Live Traffic Tracker)</span>
+              </h4>
+              <table class="w-full text-right text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 text-[11px]">
+                    <th class="pb-2">الجهاز</th>
+                    <th class="pb-2">الدولة</th>
+                    <th class="pb-2">الحالة</th>
+                    <th class="pb-2">الأمان</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 font-mono text-[11px]">
+                  <tr><td class="py-2 text-white">iPhone 15 Pro / Safari</td><td>السعودية 🇸🇦</td><td class="text-emerald-400">نشط الآن</td><td>آمن ✓</td></tr>
+                  <tr><td class="py-2 text-white">MacBook M3 / Chrome</td><td>الإمارات 🇦🇪</td><td class="text-cyan-300">يؤلف تراك</td><td>آمن ✓</td></tr>
+                  <tr><td class="py-2 text-white">Windows 11 / Edge</td><td>مصر 🇪🇬</td><td class="text-slate-300">يستمع للمكتبة</td><td>آمن ✓</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- المشغل السفلي الدائم (Player Bar) -->
+  <footer class="h-20 bg-[#08090f] border-t border-[#1a1d28] px-4 sm:px-6 flex items-center justify-between gap-4 shrink-0 z-30">
+    <div class="flex items-center gap-3 w-1/4 min-w-0">
+      <div class="w-11 h-11 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 shrink-0">
+        <i data-lucide="music" class="w-5 h-5"></i>
+      </div>
+      <div class="min-w-0">
+        <h4 id="playerTitle" class="text-xs font-bold text-white truncate">Salh Alheib Klel Studio</h4>
+        <p id="playerDesc" class="text-[10px] text-slate-400 truncate">جاهز للإنتاج والتشغيل</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center gap-1 w-full sm:w-1/2 max-w-xl">
+      <div class="flex items-center gap-4">
+        <button onclick="togglePlay()" id="btnPlayMain" class="w-8 h-8 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-bold shadow cursor-pointer">
+          <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+        </button>
+      </div>
+      <div class="flex items-center gap-2 w-full text-[10px] font-mono text-slate-400">
+        <span id="playerCurrentTime">0:00</span>
+        <input id="playerScrubber" type="range" min="0" max="100" value="0" class="flex-1 accent-cyan-400 h-1 bg-[#1a1e2b] rounded-lg cursor-pointer" />
+        <span id="playerTotalTime">2:00</span>
+      </div>
+    </div>
+
+    <div class="hidden sm:flex items-center justify-end gap-3 w-1/4 text-slate-400">
+      <i data-lucide="volume-2" class="w-4 h-4"></i>
+      <input type="range" min="0" max="1" step="0.05" value="0.8" class="w-20 accent-cyan-400 h-1 bg-[#1a1e2b] rounded cursor-pointer" />
+    </div>
+  </footer>
+
+  <!-- جافاسكريبت للتشغيل والتفاعل الكامل -->
+  <script>
+    // مكتبة التراكات
+    let tracks = [
+      {
+        id: "1",
+        title: "أنغام الصحراء والضوء",
+        desc: "Authentic Arabic oud with modern 808s and cinematic strings",
+        duration: "2:00"
+      }
+    ];
+
+    let isPlaying = false;
+    let currentTrack = tracks[0];
+
+    // تبديل الأقسام
+    function switchTab(tab) {
+      document.getElementById("viewLibrary").classList.add("hidden");
+      document.getElementById("viewStems").classList.add("hidden");
+      document.getElementById("viewFounder").classList.add("hidden");
+
+      if (tab === "create" || tab === "library") document.getElementById("viewLibrary").classList.remove("hidden");
+      if (tab === "stems") document.getElementById("viewStems").classList.remove("hidden");
+      if (tab === "founder") document.getElementById("viewFounder").classList.remove("hidden");
+    }
+
+    // عرض التراكات
+    function renderTracks() {
+      const container = document.getElementById("tracksList");
+      container.innerHTML = "";
+      tracks.forEach(track => {
+        const div = document.createElement("div");
+        div.className = "p-3 bg-[#0e111a] border border-[#1d2232] rounded-xl flex items-center justify-between gap-3";
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <button onclick="playTrack('${track.id}')" class="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">▶</button>
+            <div>
+              <h4 class="text-xs font-bold text-white">${track.title}</h4>
+              <p class="text-[10px] text-slate-400">${track.desc}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="switchTab('stems')" class="px-2.5 py-1 bg-[#171c2b] text-indigo-300 text-xs rounded-lg border border-indigo-500/30">فصل المسارات</button>
+            <button onclick="alert('جاري تحميل التراك MP3...')" class="p-1.5 bg-[#171c2b] text-slate-300 text-xs rounded-lg">تحميل</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // تشغيل الصوت
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById("btnPlayMain").innerHTML = isPlaying ? "❚❚" : "▶";
+      document.getElementById("playerTitle").innerText = currentTrack.title;
+      document.getElementById("playerDesc").innerText = currentTrack.desc;
+    }
+
+    function playTrack(id) {
+      currentTrack = tracks.find(t => t.id === id) || tracks[0];
+      isPlaying = false;
+      togglePlay();
+    }
+
+    // توليد تراك جديد
+    function createTrack() {
+      const prompt = document.getElementById("promptInput").value;
+      const btn = document.getElementById("btnCreateText");
+      btn.innerText = "جاري الإنتاج والهندسة (10 ثوان)...";
+      
+      setTimeout(() => {
+        const newTrack = {
+          id: Date.now().toString(),
+          title: "تراك استوديو Salh جديد",
+          desc: prompt,
+          duration: "2:15"
+        };
+        tracks.unshift(newTrack);
+        renderTracks();
+        playTrack(newTrack.id);
+        btn.innerText = "إنشاء التراك الموسيقي (Create Track)";
+      }, 2500);
+    }
+
+    // شات Producer
+    function sendProducerChat() {
+      const input = document.getElementById("producerChatInput");
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const chat = document.getElementById("producerChat");
+      chat.innerHTML += `<div class="p-2 rounded-lg bg-indigo-600/30 text-white border border-indigo-500/40 text-[11px]">${text}</div>`;
+      input.value = "";
+      
+      setTimeout(() => {
+        chat.innerHTML += `<div class="p-2 rounded-lg bg-[#141824] text-cyan-300 border border-cyan-500/30 text-[11px]">✓ تم استلام الفكرة يا فنان، وضعت التوزيع في المولد وجاري إنتاجه فوراً!</div>`;
+        document.getElementById("promptInput").value = text;
+        chat.scrollTop = chat.scrollHeight;
+      }, 600);
+    }
+
+    // قفل وفتح غرفة المؤسس
+    function unlockFounder() {
+      const pin = document.getElementById("pinInput").value;
+      if (pin === "8686") {
+        document.getElementById("founderLockScreen").classList.add("hidden");
+        document.getElementById("founderDashboard").classList.remove("hidden");
+        document.getElementById("founderBadge").innerText = "مفتوحة 🔓";
+        document.getElementById("founderBadge").className = "text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-mono";
+      } else {
+        document.getElementById("pinError").classList.remove("hidden");
+      }
+    }
+
+    function lockFounder() {
+      document.getElementById("founderLockScreen").classList.remove("hidden");
+      document.getElementById("founderDashboard").classList.add("hidden");
+      document.getElementById("founderBadge").innerText = "مقفلة 🔒";
+      document.getElementById("founderBadge").className = "text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono";
+      document.getElementById("pinInput").value = "";
+    }
+
+    function downloadStem(name) {
+      alert(`جاري تجهيز وتحميل مسار ${name} بجودة استوديو عالية...`);
+    }
+
+    function setPromptTag(tag) {
+      document.getElementById("promptInput").value = tag;
+    }
+
+    function generateLyricsMock() {
+      document.getElementById("lyricsInput").value = "يا ليل طال السهر والشوق ناداني\nوالعود يعزف حنين القلب وألحاني";
+    }
+
+    function logoutUser() {
+      document.getElementById("userName").innerText = "ضيف الاستوديو (Guest)";
+      document.getElementById("userRole").innerText = "زائر";
+      document.getElementById("userAvatar").innerText = "G";
+      lockFounder();
+      alert("تم تسجيل الخروج بنجاح.");
+    }
+
+    function openNewUserModal() {
+      const name = prompt("أدخل اسم الفنان الجديد:", "فنان مميز");
+      if (name) {
+        document.getElementById("userName").innerText = name;
+        document.getElementById("userRole").innerText = "فنان معتمد";
+        document.getElementById("userAvatar").innerText = name.slice(0, 2).toUpperCase();
+      }
+    }
+
+    // تشغيل الأيقونات والعرض الأولي
+    window.onload = () => {
+      lucide.createIcons();
+      renderTracks();
+    };
+  </script>
+</body>
+</html>
