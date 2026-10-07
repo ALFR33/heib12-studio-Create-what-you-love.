@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta name="google-site-verification" content="4qtykzOTuOP_khbTr3sipwjfU9ygGYgKquS8vuMJX3s" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>heib12 - AI Music Studio</title>
+  
+  <!-- مكتبة Google الرسمية لـ OAuth2 -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   
   <!-- Tailwind CSS والتنسيقات -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,23 +28,32 @@
         </div>
       </div>
 
-      <!-- قسم تسجيل الدخول بالبريد الإلكتروني -->
+      <!-- قسم تسجيل دخول Google الفعلي -->
       <div>
-        <!-- زر فتح نافذة التسجيل -->
-        <button id="login-modal-btn" onclick="openLoginModal()" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 font-semibold rounded-xl text-xs text-white shadow-lg flex items-center gap-2 transition-all">
-          <i class="fa-solid fa-envelope"></i> تسجيل الدخول بالبريد
-        </button>
+        <!-- زر Google الحقيقي الرسمي المربوط بمفتاحك -->
+        <div id="g_id_onload"
+             data-client_id="360411448313-770sdpuiela9gnd4i9698lbs9nc8gu9q.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleGoogleResponse"
+             data-auto_prompt="false">
+        </div>
 
-        <!-- صندوق بيانات المستخدم المسجل -->
+        <div class="g_id_signin"
+             data-type="standard"
+             data-shape="pill"
+             data-theme="filled_blue"
+             data-text="signin_with"
+             data-size="medium"
+             data-logo_alignment="left">
+        </div>
+
+        <!-- يظهر فقط بعد تسجيل دخولك الفعلي بحسابك -->
         <div id="user-box" class="hidden flex items-center gap-3 bg-slate-950 border border-slate-800 px-3.5 py-2 rounded-xl">
-          <div class="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 font-bold text-xs">
-            <i class="fa-solid fa-user"></i>
-          </div>
+          <img id="user-img" src="" class="w-8 h-8 rounded-full border border-cyan-400 object-cover" />
           <div class="text-right">
-            <p id="user-email-display" class="text-xs font-bold text-slate-200"></p>
-            <p class="text-[10px] text-emerald-400 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> متصل
-            </p>
+            <p id="user-name" class="text-xs font-bold text-slate-200"></p>
+            <p id="user-email" class="text-[10px] text-slate-400"></p>
           </div>
           <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-xs mr-2" title="تسجيل الخروج">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -54,7 +65,7 @@
     <!-- مساحة العمل والإنتاج -->
     <main class="mt-6 space-y-4">
       <div id="login-warning" class="p-3 bg-cyan-950/70 border border-cyan-500/50 rounded-xl text-cyan-200 text-xs">
-        👋 مرحباً بك! قم بالضغط على زر <b>تسجيل الدخول بالبريد</b> أعلاه للبدء في التوليد والتنزيل.
+        👋 مرحباً بك! قم بالضغط على زر <b>Sign in with Google</b> أعلاه لتسجيل الدخول الفعلي وتفعيل التوليد والتنزيل.
       </div>
 
       <div>
@@ -83,11 +94,87 @@
     </main>
   </div>
 
-  <!-- نافذة تسجيل الدخول (Modal) -->
-  <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl relative">
-      <button onclick="closeLoginModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-sm">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+  <script>
+    let activeUser = null;
 
-      <h2 class="text-
+    // استلام بيانات الدخول الحقيقية من خوادم Google
+    function handleGoogleResponse(response) {
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      const profile = JSON.parse(jsonPayload);
+
+      activeUser = profile;
+
+      // إخفاء زر Google وإظهار حسابك
+      document.querySelector(".g_id_signin").style.display = "none";
+      document.getElementById("user-box").classList.remove("hidden");
+      document.getElementById("login-warning").innerHTML = `✅ مرحباً بك يا <b>${profile.name}</b>! الحساب متصل وجاهز للإنتاج والتنزيل.`;
+      document.getElementById("login-warning").className = "p-3 bg-emerald-950/70 border border-emerald-500/50 rounded-xl text-emerald-200 text-xs";
+
+      document.getElementById("user-name").innerText = profile.name;
+      document.getElementById("user-email").innerText = profile.email;
+      document.getElementById("user-img").src = profile.picture;
+    }
+
+    function logout() {
+      activeUser = null;
+      document.getElementById("user-box").classList.add("hidden");
+      document.querySelector(".g_id_signin").style.display = "block";
+      document.getElementById("login-warning").innerHTML = "👋 يرجى تسجيل الدخول بحساب Google للبدء.";
+      document.getElementById("login-warning").className = "p-3 bg-cyan-950/70 border border-cyan-500/50 rounded-xl text-cyan-200 text-xs";
+    }
+
+    // تنزيل ملف الـ MP3 مباشرة إلى جهازك
+    function downloadAudio(url, filename) {
+      fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = `${filename || "heib12-track"}.mp3`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
+        .catch(() => {
+          window.open(url, '_blank');
+        });
+    }
+
+    function startGeneration() {
+      if (!activeUser) {
+        alert("يرجى تسجيل الدخول بحساب Google أولاً!");
+        return;
+      }
+
+      const btn = document.getElementById("gen-btn");
+      const title = document.getElementById("track-name").value || "مقطوعة heib12";
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الإنتاج والتوزيع الموسيقي...`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> توليد المقطوعة الموسيقية`;
+        
+        const container = document.getElementById("tracks-container");
+        const trackHtml = `
+          <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-100">${title}</p>
+              <p class="text-[10px] text-slate-400">المالك: ${activeUser.name}</p>
+            </div>
+            <button onclick="downloadAudio('https://storage.googleapis.com/producer-app-public/clips/demo_track.mp3', '${title}')" class="px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-download"></i> تنزيل MP3
+            </button>
+          </div>
+        `;
+        container.insertAdjacentHTML("afterbegin", trackHtml);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
